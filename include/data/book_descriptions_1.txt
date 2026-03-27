@@ -1,0 +1,5 @@
+106:::The Alchemist:::1988:::HarperOne:::Fiction/Philosophy:::A timeless story about following one’s dreams and discovering purpose in life through the journey of a young shepherd seeking his personal legend.
+107:::Atomic Habits:::2018:::Avery:::Self-Help/Productivity:::A practical guide to building good habits and breaking bad ones using small, consistent changes that lead to long-term success.
+108:::Sapiens:::2011:::Harper:::History/Anthropology:::A brief history of humankind, exploring how biology, culture, and technology shaped human societies.
+109:::Thinking, Fast and Slow:::2011:::Farrar, Straus and Giroux:::Psychology/Behavioral Economics:::An exploration of how humans think and make decisions through two systems: fast intuitive thinking and slow analytical reasoning.
+110:::Deep Learning with Python:::2017:::Manning Publications:::Technology/Artificial Intelligence:::An accessible introduction to deep learning concepts and practical implementations using Python and Keras.

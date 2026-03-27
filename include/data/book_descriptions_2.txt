@@ -1,0 +1,5 @@
+111:::Man's Search for Meaning:::1946:::Beacon Press:::Psychology/Memoir:::A powerful reflection on finding purpose and meaning in life, based on the author’s experiences in Nazi concentration camps.
+112:::The Power of Now:::1997:::New World Library:::Self-Help/Spirituality:::A guide to spiritual enlightenment through living in the present moment and freeing oneself from overthinking.
+113:::Educated:::2018:::Random House:::Memoir:::A compelling story of a woman who grows up in a strict and isolated family and pursues education to transform her life.
+114:::The 7 Habits of Highly Effective People:::1989:::Free Press:::Self-Help/Personal Development:::A classic guide to personal and professional effectiveness based on principles of character, discipline, and growth.
+115:::Clean Code:::2008:::Prentice Hall:::Technology/Software Engineering:::A handbook of best practices for writing clean, maintainable, and efficient code for software development.

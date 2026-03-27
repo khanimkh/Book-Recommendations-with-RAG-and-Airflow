@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Book Recommendation App</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #0ea5e9;
+      --accent-2: #16a34a;
+      --border: #dbe3ee;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 20% 10%, #e0f2fe, transparent 30%),
+                  radial-gradient(circle at 80% 20%, #dcfce7, transparent 30%),
+                  var(--bg);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 32px auto;
+      padding: 0 16px 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, #0284c7, #0ea5e9);
+      color: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 24px rgba(2, 132, 199, 0.25);
+    }
+
+    .hero h1 { margin: 0 0 8px; }
+    .hero p { margin: 0; opacity: 0.95; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1.15rem;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 6px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button.secondary { background: var(--accent-2); }
+
+    .form-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .form-actions button {
+      margin-top: 0;
+    }
+
+    .link-btn {
+      display: inline-block;
+      text-decoration: none;
+      background: #e2e8f0;
+      color: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 600;
+    }
+
+    .notice {
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+      margin: 0;
+    }
+
+    .notice.error {
+      background: #fef2f2;
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+
+    .results {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .results li {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .stat-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 1.2rem;
+      color: #0369a1;
+    }
+
+    .pager {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-btn {
+      display: inline-block;
+      text-decoration: none;
+      background: #e2e8f0;
+      color: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .cat-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .cat-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #f8fafc;
+    }
+
+    .chat-fab {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 999;
+      border-radius: 999px;
+      padding: 12px 16px;
+      box-shadow: 0 10px 26px rgba(2, 132, 199, 0.35);
+    }
+
+    .chat-widget {
+      position: fixed;
+      right: 20px;
+      bottom: 84px;
+      width: min(360px, calc(100vw - 24px));
+      height: 520px;
+      z-index: 1000;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.22);
+      display: none;
+      overflow: hidden;
+    }
+
+    .chat-widget.open { display: grid; grid-template-rows: auto 1fr auto; }
+
+    .chat-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      background: linear-gradient(120deg, #0284c7, #0ea5e9);
+      color: white;
+    }
+
+    .chat-head button {
+      margin: 0;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.24);
+    }
+
+    .chat-body {
+      padding: 10px;
+      overflow-y: auto;
+      background: #f8fafc;
+      display: grid;
+      gap: 8px;
+    }
+
+    .bubble {
+      border-radius: 10px;
+      padding: 8px 10px;
+      max-width: 92%;
+      white-space: pre-wrap;
+      font-size: 0.92rem;
+    }
+
+    .bubble.user { background: #dbeafe; margin-left: auto; }
+    .bubble.bot { background: #e2e8f0; }
+
+    .chat-sources {
+      font-size: 0.82rem;
+      color: #334155;
+      border-top: 1px dashed #cbd5e1;
+      padding-top: 6px;
+      margin-top: 4px;
+    }
+
+    .chat-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      padding: 10px;
+      border-top: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .chat-form button { margin: 0; }
+
+    .muted { color: var(--muted); }
+
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <h1>Book Recommendation Assistant</h1>
+      <p>Add books, run semantic search, and keep DAG observability in Airflow.</p>
+    </section>
+
+    {% if message %}
+      <p class="notice {% if 'already' in message or 'rejected' in message or 'Please' in message or 'Only' in message or 'must be' in message or 'No valid' in message %}error{% endif %}">{{ message }}</p>
+    {% endif %}
+
+    <section class="grid">
+      <article class="card">
+        <h2>Upload Books File</h2>
+        <p class="muted">Upload a .txt file with following format:</p>
+        <p class="muted">Expected format per line: id:::title:::year:::publisher:::category:::description</p>
+        <p class="muted">Category can be empty and will be auto-detected. Multiple categories can be separated with /.</p>
+        <p class="muted" style="font-size:0.85rem; background:#f8fafc; border:1px solid #dbe3ee; border-radius:8px; padding:8px 10px; font-family:monospace;">
+          1:::The Power of Now:::1997:::New World Library:::Self-Help/Philosophy:::A guide to spiritual enlightenment through present-moment awareness.<br/>
+          2:::Sapiens:::2011:::Harvill Secker::::::A brief history of humankind from the Stone Age to the modern era.
+        </p>
+        <form method="post" action="/upload-books" enctype="multipart/form-data">
+          <label for="books_file">Books file (.txt)</label>
+          <input id="books_file" name="books_file" type="file" accept=".txt" required />
+          <button type="submit">Upload</button>
+        </form>
+      </article>
+
+      <article class="card">
+        <h2>Add a New Book</h2>
+        <form method="post" action="/add">
+          <label for="title">Title</label>
+          <input id="title" name="title" required />
+
+          <label for="year">Year</label>
+          <input id="year" name="year" placeholder="e.g. 2011" required />
+
+          <label for="publisher">Publisher</label>
+          <input id="publisher" name="publisher" placeholder="e.g. Harvill Secker" required />
+
+          <label for="description">Description</label>
+          <textarea id="description" name="description" required></textarea>
+
+          <label for="category">Category (optional)</label>
+          <input id="category" name="category" placeholder="e.g. Philosophy/Fiction" />
+          <p class="muted" style="font-size:0.82rem; margin:6px 0 0;">If left empty, category will be auto-detected. Use / for multiple categories.</p>
+
+          <button type="submit">Add Book</button>
+        </form>
+      </article>
+
+      <article class="card">
+        <h2>Search Books</h2>
+        <p class="muted">Fill in one or more fields to find a recommendation.</p>
+        <form method="post" action="/search">
+          <label for="search_title">Title (optional)</label>
+          <input id="search_title" name="title" placeholder="e.g. The Alchemist" value="{{ search_title or '' }}" />
+
+          <label for="search_year">Year (optional)</label>
+          <input id="search_year" name="year" placeholder="e.g. 2011" value="{{ search_year or '' }}" />
+
+          <label for="search_publisher">Publisher (optional)</label>
+          <input id="search_publisher" name="publisher" placeholder="e.g. Harvill Secker" value="{{ search_publisher or '' }}" />
+
+          <label for="search_category">Category (optional)</label>
+          <input id="search_category" name="category" placeholder="e.g. Philosophy/Fiction" value="{{ search_category or '' }}" />
+
+          <label for="search_context">Topic / Context (optional)</label>
+          <input id="search_context" name="context" placeholder="e.g. self-discovery, science, philosophy" value="{{ search_context or '' }}" />
+
+          <div class="form-actions">
+            <button class="secondary" type="submit">Find Books</button>
+            <a class="link-btn" href="/">Clear Search</a>
+          </div>
+        </form>
+
+        {% if books %}
+          <ul class="results">
+            {% for b in books %}
+              <li>
+                <strong>{{ b.title }}</strong><br />
+                <span class="muted">{{ b.year }} | {{ b.publisher }} | Category: {{ b.category or 'General' }}</span>
+                <p>{{ b.description }}</p>
+              </li>
+            {% endfor %}
+          </ul>
+        {% elif books is not none and (search_title or search_year or search_publisher or search_category or search_context) %}
+          <p class="muted">No matching books found.</p>
+        {% endif %}
+      </article>
+
+      <article class="card">
+        <h2>Library Statistics</h2>
+        <p class="muted">General overview of your book collection.</p>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="muted">Total Books</span>
+            <strong>{{ stats.total_books or 0 }}</strong>
+          </div>
+          <div class="stat-box">
+            <span class="muted">Unique Publishers</span>
+            <strong>{{ stats.total_publishers or 0 }}</strong>
+          </div>
+        </div>
+
+        <p class="muted" style="margin:0 0 8px;">Top categories</p>
+        {% if stats and stats.categories %}
+          <ul class="cat-list">
+            {% for category_name, category_count in stats.categories[:6] %}
+              <li>
+                <span>{{ category_name }}</span>
+                <strong>{{ category_count }}</strong>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="muted">No category data yet.</p>
+        {% endif %}
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>Manage Books</h2>
+      <p class="muted">View all books in your library and update or delete as needed.</p>
+      
+      <div id="booksList" style="margin-top:12px;">
+        {%- if manage_books %}
+          <ul class="results" style="list-style:none; padding:0; margin:0; display:grid; gap:10px;">
+            {%- for book in manage_books %}
+              <li style="border:1px solid var(--border); border-radius:10px; padding:12px; background:#fff; display:flex; justify-content:space-between; align-items:flex-start;">
+                <div style="flex:1;">
+                  <strong>{{ book.title }}</strong><br />
+                  <span class="muted">{{ book.year }} | {{ book.publisher }} | Category: {{ book.category or 'General' }}</span>
+                  <p style="margin:6px 0 0; font-size:0.9rem; color:var(--muted);">{{ book.description }}</p>
+                </div>
+                <div style="display:flex; gap:6px; margin-left:12px; flex-shrink:0;">
+                  <button class="secondary" type="button" onclick='editBook({{ book.title|tojson }}, {{ book.year|tojson }}, {{ book.publisher|tojson }}, {{ book.description|tojson }}, {{ (book.category or "General")|tojson }})' style="padding:6px 10px; font-size:0.85rem; background:#0ea5e9;">Edit</button>
+                  <button type="button" onclick='deleteBook({{ book.title|tojson }}, {{ book.year|tojson }}, {{ book.publisher|tojson }})' style="padding:6px 10px; font-size:0.85rem; background:#ef4444;">Delete</button>
+                </div>
+              </li>
+            {%- endfor %}
+          </ul>
+
+          <div class="pager">
+            <div>
+              {% if current_page > 1 %}
+                <a class="page-btn" href="/?page={{ current_page - 1 }}">Previous</a>
+              {% endif %}
+            </div>
+            <span class="muted">Page {{ current_page }} of {{ total_pages }}</span>
+            <div>
+              {% if current_page < total_pages %}
+                <a class="page-btn" href="/?page={{ current_page + 1 }}">Next</a>
+              {% endif %}
+            </div>
+          </div>
+        {%- else %}
+          <p class="muted">No books in library yet.</p>
+        {%- endif %}
+      </div>
+
+      <!-- Hidden edit form (shown when edit clicked) -->
+      <div id="editModal" style="display:none; margin-top:16px; padding:14px; background:#f8f9fa; border:1px solid var(--border); border-radius:10px;">
+        <h3 style="margin-top:0;">Edit Book</h3>
+        <form method="post" action="/edit-book" id="editForm">
+          <input type="hidden" id="oldTitle" name="old_title" />
+          <input type="hidden" id="oldYear" name="old_year" />
+          <input type="hidden" id="oldPublisher" name="old_publisher" />
+          <input type="hidden" id="editPage" name="page" value="{{ current_page or 1 }}" />
+          
+          <label for="editTitle">New Title</label>
+          <input id="editTitle" name="new_title" required />
+
+          <label for="editYear">New Year</label>
+          <input id="editYear" name="new_year" required />
+
+          <label for="editPublisher">New Publisher</label>
+          <input id="editPublisher" name="new_publisher" required />
+
+          <label for="editDescription">New Description</label>
+          <textarea id="editDescription" name="new_description" required></textarea>
+
+          <label for="editCategory">New Category (optional)</label>
+          <input id="editCategory" name="new_category" placeholder="e.g. Fiction/Philosophy" />
+          <p class="muted" style="font-size:0.82rem; margin:6px 0 0;">If left empty, category will be auto-detected. Use / for multiple categories.</p>
+
+          <div style="display:flex; gap:8px; margin-top:12px;">
+            <button type="submit">Save Changes</button>
+            <button type="button" onclick="cancelEdit()" style="background:#999;">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <button id="chatFab" class="chat-fab" type="button">Ask AI Assistant</button>
+  <section id="chatWidget" class="chat-widget" aria-live="polite">
+    <div class="chat-head">
+      <strong>AI Book Assistant</strong>
+      <button id="chatClose" type="button">Close</button>
+    </div>
+    <div id="chatBody" class="chat-body">
+      <div class="bubble bot">Hi! Ask me for book recommendations by topic, year, publisher, or category.</div>
+    </div>
+    <form id="chatForm" class="chat-form">
+      <input id="chatInput" name="message" placeholder="Ask about any book topic..." required />
+      <button type="submit">Send</button>
+    </form>
+  </section>
+
+  <script>
+    const currentPage = {{ current_page or 1 }};
+
+    // Edit book: populate form and show modal
+    function editBook(title, year, publisher, description, category) {
+      document.getElementById('oldTitle').value = title;
+      document.getElementById('oldYear').value = year;
+      document.getElementById('oldPublisher').value = publisher;
+      document.getElementById('editTitle').value = title;
+      document.getElementById('editYear').value = year;
+      document.getElementById('editPublisher').value = publisher;
+      document.getElementById('editDescription').value = description;
+      document.getElementById('editCategory').value = category || '';
+      document.getElementById('editModal').style.display = 'block';
+      // Scroll to modal
+      document.getElementById('editModal').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Cancel edit
+    function cancelEdit() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+
+    // Delete book
+    function deleteBook(title, year, publisher) {
+      if (!confirm(`Delete "${title}" (${year}, ${publisher})? This cannot be undone.`)) {
+        return;
+      }
+      
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/delete-book';
+      form.innerHTML = `
+        <input type="hidden" name="title" value="${title}" />
+        <input type="hidden" name="year" value="${year}" />
+        <input type="hidden" name="publisher" value="${publisher}" />
+        <input type="hidden" name="page" value="${currentPage}" />
+      `;
+      document.body.appendChild(form);
+      form.submit();
+    }
+
+    const chatWidget = document.getElementById('chatWidget');
+    const chatFab = document.getElementById('chatFab');
+    const chatClose = document.getElementById('chatClose');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const chatBody = document.getElementById('chatBody');
+
+    function appendBubble(text, kind, sources = []) {
+      const bubble = document.createElement('div');
+      bubble.className = `bubble ${kind}`;
+      bubble.textContent = text;
+
+      if (kind === 'bot' && sources.length) {
+        const src = document.createElement('div');
+        src.className = 'chat-sources';
+        src.textContent = `Sources: ${sources.map(b => `${b.title} (${b.year}, ${b.publisher}) [${b.category || 'General'}]`).join(' | ')}`;
+        bubble.appendChild(src);
+      }
+
+      chatBody.appendChild(bubble);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    chatFab.addEventListener('click', () => {
+      chatWidget.classList.add('open');
+      chatInput.focus();
+    });
+
+    chatClose.addEventListener('click', () => {
+      chatWidget.classList.remove('open');
+    });
+
+    chatForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const message = chatInput.value.trim();
+      if (!message) return;
+
+      appendBubble(message, 'user');
+      chatInput.value = '';
+      appendBubble('Thinking...', 'bot');
+
+      const formData = new FormData();
+      formData.append('message', message);
+
+      try {
+        const response = await fetch('/chat-api', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await response.json();
+
+        chatBody.removeChild(chatBody.lastChild);
+        appendBubble(data.reply || 'No response.', 'bot', data.books || []);
+      } catch (error) {
+        chatBody.removeChild(chatBody.lastChild);
+        appendBubble(`Sorry, assistant is unavailable right now. ${error}`, 'bot');
+      }
+    });
+  </script>
+</body>
+</html>
